@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bridging the Gap — Parent Communication Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#fdf6ee;color:#1e293b;overflow-x:hidden}
+
+.hero{min-height:100vh;background:#0f1f3d;display:grid;grid-template-columns:1fr 1fr;align-items:center;position:relative;overflow:hidden}
+.hero-left{padding:80px 60px 80px 80px;position:relative;z-index:1}
+.hero-tag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:#d97706;margin-bottom:28px;border:1px solid rgba(217,119,6,0.4);padding:6px 14px;border-radius:2px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,4vw,4.2rem);line-height:1.1;color:#fff;margin-bottom:24px}
+.hero h1 em{color:#60a5fa;font-style:italic}
+.hero-desc{font-size:1.05rem;line-height:1.75;color:rgba(255,255,255,0.65);max-width:420px;margin-bottom:48px}
+.hero-stats{display:flex;gap:36px}
+.stat{border-left:2px solid rgba(59,130,246,0.5);padding-left:16px}
+.stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#fff}
+.stat-label{font-size:0.75rem;color:rgba(255,255,255,0.45);letter-spacing:0.5px;margin-top:2px}
+
+.hero-right{display:flex;justify-content:center;align-items:center;padding:60px 40px;position:relative;z-index:1}
+.phone-frame{width:280px;background:#1e293b;border-radius:40px;padding:14px;box-shadow:0 40px 80px rgba(0,0,0,0.5)}
+.phone-notch{width:80px;height:22px;background:#0f1f3d;border-radius:0 0 14px 14px;margin:0 auto 12px}
+.phone-screen{background:#f1f5f9;border-radius:28px;overflow:hidden}
+.phone-header{background:#3b82f6;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.phone-avatar{width:32px;height:32px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px}
+.phone-name{color:#fff;font-weight:500;font-size:13px}
+.phone-status{color:rgba(255,255,255,0.7);font-size:10px}
+.phone-messages{padding:12px;display:flex;flex-direction:column;gap:8px;min-height:300px}
+.msg{max-width:80%;padding:9px 12px;border-radius:16px;font-size:11px;line-height:1.5}
+.msg.parent{background:#fff;color:#334155;align-self:flex-start;border-bottom-left-radius:4px}
+.msg.teacher{background:#3b82f6;color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+
+section{padding:100px 80px}
+.section-label{font-size:11px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:#3b82f6;margin-bottom:16px}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,3vw,3rem);line-height:1.15;color:#0f1f3d;margin-bottom:20px}
+.section-desc{font-size:1.05rem;color:#64748b;line-height:1.75;max-width:540px;margin-bottom:60px}
+
+.pillars{background:#fdf6ee}
+.pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.pillar-card{background:#fff;border-radius:16px;padding:32px 28px;border:1px solid #e2e8f0;transition:all 0.3s}
+.pillar-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(15,31,61,0.1)}
+.pillar-icon{width:48px;height:48px;background:#eff6ff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px}
+.pillar-title{font-weight:600;font-size:1rem;color:#0f1f3d;margin-bottom:10px}
+.pillar-desc{font-size:0.875rem;color:#64748b;line-height:1.65}
+
+.conversations{background:#0f1f3d;position:relative;overflow:hidden}
+.conversations .section-title{color:#fff}
+.conversations .section-desc{color:rgba(255,255,255,0.55)}
+.conversations .section-label{color:#d97706}
+
+.conv-tabs{display:flex;gap:8px;margin-bottom:40px;flex-wrap:wrap}
+.conv-tab{padding:8px 20px;border-radius:100px;font-size:0.85rem;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.55);background:transparent;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.conv-tab:hover{background:#3b82f6;border-color:#3b82f6;color:#fff}
+.conv-tab.active{background:#3b82f6;border-color:#3b82f6;color:#fff}
+
+.conv-panel{display:none;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.conv-panel.active{display:grid}
+
+.chat-window{background:#f8fafc;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.chat-header{background:#3b82f6;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.chat-avatar{width:36px;height:36px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px}
+.chat-name{color:#fff;font-weight:600;font-size:14px}
+.chat-online{color:rgba(255,255,255,0.75);font-size:11px}
+.chat-body{padding:20px;display:flex;flex-direction:column;gap:12px;background:#f1f5f9;min-height:300px}
+.chat-msg{max-width:78%;padding:10px 14px;border-radius:18px;font-size:13px;line-height:1.55}
+.chat-msg.p{background:#fff;color:#334155;align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.chat-msg.t{background:#3b82f6;color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+
+.conv-info{padding:20px 0;color:rgba(255,255,255,0.85);position:relative;z-index:1}
+.conv-type-badge{display:inline-block;background:rgba(59,130,246,0.2);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);padding:4px 12px;border-radius:4px;font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.conv-info h3{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:14px;color:#fff}
+.conv-info p{font-size:0.9rem;line-height:1.7;color:rgba(255,255,255,0.55);margin-bottom:24px}
+.conv-highlights{list-style:none}
+.conv-highlights li{font-size:0.875rem;color:rgba(255,255,255,0.7);padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:flex-start;gap:10px}
+.conv-highlights li::before{content:'✓';color:#34d399;font-weight:700;flex-shrink:0;margin-top:1px}
+
+.approach{background:#fff}
+.approach-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.approach .section-title{color:#0f1f3d}
+.timeline{position:relative}
+.timeline::before{content:'';position:absolute;left:18px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#3b82f6,transparent)}
+.timeline-item{display:flex;gap:24px;margin-bottom:36px;position:relative}
+.timeline-dot{width:38px;height:38px;border-radius:50%;background:#3b82f6;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;box-shadow:0 0 0 4px rgba(59,130,246,0.15);position:relative;z-index:1}
+.timeline-content h4{font-weight:600;color:#0f1f3d;margin-bottom:6px;font-size:0.95rem}
+.timeline-content p{font-size:0.85rem;color:#64748b;line-height:1.65}
+
+footer{background:#0f1f3d;padding:48px 80px;display:flex;justify-content:space-between;align-items:center}
+.footer-brand{font-family:'Playfair Display',serif;color:#fff;font-size:1.2rem}
+.footer-brand span{color:#60a5fa}
+.footer-copy{font-size:0.8rem;color:rgba(255,255,255,0.35)}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding:80px 0 0}
+  .hero-left{padding:40px}
+  .hero-right{padding:40px 40px 60px}
+  .pillars-grid{grid-template-columns:1fr 1fr}
+  .conv-panel.active{grid-template-columns:1fr}
+  .approach-grid{grid-template-columns:1fr}
+  section{padding:60px 40px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:40px}
+}
+@media(max-width:600px){
+  .pillars-grid{grid-template-columns:1fr}
+  .hero-stats{gap:20px}
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-left">
+    <span class="hero-tag">Portfolio — Teaching Practice</span>
+    <h1>Bridging the <em>Gap</em> Between Teacher &amp; Parent</h1>
+    <p class="hero-desc">A showcase of thoughtful, professional parent-teacher communication that builds trust, keeps families informed, and supports every child's growth journey.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Communication types</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Warm &amp; professional</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Goal: student success</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">
+          <div class="phone-avatar">👩</div>
+          <div><div class="phone-name">Anna's Parent</div><div class="phone-status">Active now</div></div>
+        </div>
+        <div class="phone-messages">
+          <div class="msg parent">Hi Teacher! How did Anna do today? 😊</div>
+          <div class="msg teacher">Good afternoon! Anna did great — she completed 5 worksheets and stayed focused! 👍</div>
+          <div class="msg parent">That's wonderful! Any areas to work on?</div>
+          <div class="msg teacher">She had a bit of difficulty with subtraction, but improved with guidance 😊 10–15 min daily practice will help!</div>
+          <div class="msg parent">Thank you so much, Teacher! 🙏</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pillars">
+  <div class="section-label">My approach</div>
+  <div class="section-title">Four Pillars of Effective Communication</div>
+  <p class="section-desc">Every message I send is guided by these core principles — ensuring parents always feel informed, respected, and involved.</p>
+  <div class="pillars-grid">
+    <div class="pillar-card"><div class="pillar-icon">📋</div><div class="pillar-title">Clear enrollment process</div><p class="pillar-desc">Walking parents through each step — from orientation to assessment — so they feel confident before sessions begin.</p></div>
+    <div class="pillar-card"><div class="pillar-icon">📊</div><div class="pillar-title">Honest progress updates</div><p class="pillar-desc">Sharing specific strengths and areas for improvement after every session, so parents know exactly how their child is growing.</p></div>
+    <div class="pillar-card"><div class="pillar-icon">🤝</div><div class="pillar-title">Home-school partnership</div><p class="pillar-desc">Giving parents simple, practical tips they can use at home to reinforce what's learned in sessions.</p></div>
+    <div class="pillar-card"><div class="pillar-icon">💳</div><div class="pillar-title">Smooth administration</div><p class="pillar-desc">Handling payment reminders and scheduling with kindness and professionalism, keeping the relationship warm.</p></div>
+  </div>
+</section>
+
+<section class="conversations">
+  <div class="section-label">Sample conversations</div>
+  <div class="section-title">Real Exchanges, Real Impact</div>
+  <p class="section-desc">These sample conversations demonstrate how I communicate with parents across different situations — always warm, clear, and professional.</p>
+
+  <div class="conv-tabs">
+    <button class="conv-tab active" type="button">Enrollment</button>
+    <button class="conv-tab" type="button">Session update</button>
+    <button class="conv-tab" type="button">Progress report</button>
+    <button class="conv-tab" type="button">Payment</button>
+  </div>
+
+  <div id="panels-container">
+
+    <div class="conv-panel active">
+      <div class="chat-window">
+        <div class="chat-header"><div class="chat-avatar">👩</div><div><div class="chat-name">Parent</div><div class="chat-online">Active now</div></div></div>
+        <div class="chat-body">
+          <div class="chat-msg p">Hi Teacher! Good afternoon 😊 I'm interested in enrolling my child.</div>
+          <div class="chat-msg t">Good afternoon! 😊 Thank you for your interest. I'll guide you through our enrollment process.</div>
+          <div class="chat-msg p">Thank you po! What are the steps?</div>
+          <div class="chat-msg t">First, we'll have an orientation where I explain the program, study approach, expectations, and learning goals.</div>
+          <div class="chat-msg p">Okay po, noted.</div>
+          <div class="chat-msg t">After orientation, your child will take an assessment to determine their starting level. I'll discuss the results with you. 😊</div>
+        </div>
+      </div>
+      <div class="conv-info">
+        <div class="conv-type-badge">Enrollment</div>
+        <h3>Guiding Parents from Day One</h3>
+        <p>When a parent expresses interest, the first impression matters. This exchange shows how I make the process feel welcoming and structured, not overwhelming.</p>
+        <ul class="conv-highlights">
+          <li>Warm, immediate acknowledgment of the parent's inquiry</li>
+          <li>Step-by-step guidance without information overload</li>
+          <li>Clear explanation of orientation, assessment, and next steps</li>
+          <li>Professional tone that builds trust from the first message</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="conv-panel">
+      <div class="chat-window">
+        <div class="chat-header"><div class="chat-avatar">👩</div><div><div class="chat-name">Parent (Anna's Mom/Dad)</div><div class="chat-online">Active now</div></div></div>
+        <div class="chat-body">
+          <div class="chat-msg p">Hi Teacher! Good afternoon 😊 Did Anna attend today's session?</div>
+          <div class="chat-msg t">Good afternoon! 😊 Yes, Anna attended today's session.</div>
+          <div class="chat-msg p">How did she do po?</div>
+          <div class="chat-msg t">She did well! She completed her assigned worksheets and stayed focused during the session 👍</div>
+          <div class="chat-msg p">That's good to hear! Any difficulties?</div>
+          <div class="chat-msg t">She had a bit of difficulty with subtraction with borrowing, but improved after guidance 😊</div>
+        </div>
+      </div>
+      <div class="conv-info">
+        <div class="conv-type-badge">Session update</div>
+        <h3>Keeping Parents in the Loop</h3>
+        <p>Parents shouldn't wonder what happened during a session. This exchange shows how I provide timely, balanced updates — celebrating wins and addressing challenges honestly.</p>
+        <ul class="conv-highlights">
+          <li>Confirms attendance promptly so parents feel secure</li>
+          <li>Highlights specific achievements, not just vague praise</li>
+          <li>Transparently shares difficulty areas without alarm</li>
+          <li>Ends on a positive, forward-looking note</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="conv-panel">
+      <div class="chat-window">
+        <div class="chat-header"><div class="chat-avatar">👩</div><div><div class="chat-name">Parent (Anna's Mom/Dad)</div><div class="chat-online">Active now</div></div></div>
+        <div class="chat-body">
+          <div class="chat-msg p">Hi Teacher! How did Anna do in Math today? 😊</div>
+          <div class="chat-msg t">Good afternoon! 😊 Anna did well — she completed 5 worksheets and stayed focused throughout the session 👍</div>
+          <div class="chat-msg p">That's great! Did she have any difficulties?</div>
+          <div class="chat-msg t">She had a bit of difficulty with subtraction with borrowing, but I guided her step by step and she improved by the end 😊</div>
+          <div class="chat-msg p">What can we do at home to help her?</div>
+          <div class="chat-msg t">Let her practice similar problems for 10–15 minutes daily. Consistent practice will really reinforce her skills 😊</div>
+        </div>
+      </div>
+      <div class="conv-info">
+        <div class="conv-type-badge">Progress report</div>
+        <h3>Empowering Parents as Partners</h3>
+        <p>The best teachers extend learning beyond the classroom. I give parents a concrete, doable action they can take at home — turning them into an active partner.</p>
+        <ul class="conv-highlights">
+          <li>Specific progress details (e.g. "5 worksheets completed")</li>
+          <li>Actionable, realistic home-practice recommendation</li>
+          <li>Reinforces the parent-teacher partnership</li>
+          <li>Encourages without creating anxiety</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="conv-panel">
+      <div class="chat-window">
+        <div class="chat-header"><div class="chat-avatar">👩</div><div><div class="chat-name">Parent (Anna's Mom/Dad)</div><div class="chat-online">Active now</div></div></div>
+        <div class="chat-body">
+          <div class="chat-msg t">Good afternoon! 😊 Just a quick reminder regarding Anna's session payment.</div>
+          <div class="chat-msg p">Hi Teacher! Yes po, I'll send it later today.</div>
+          <div class="chat-msg t">Thank you so much! Please let me know once it has been sent 😊</div>
+          <div class="chat-msg p">Hi Teacher, I've sent the payment already.</div>
+          <div class="chat-msg t">Received, thank you so much! 😊 Looking forward to Anna's next session.</div>
+        </div>
+      </div>
+      <div class="conv-info">
+        <div class="conv-type-badge">Payment</div>
+        <h3>Professional, Warm Reminders</h3>
+        <p>Money conversations can feel awkward — but they don't have to be. This shows how I handle payment reminders with grace, keeping the tone friendly.</p>
+        <ul class="conv-highlights">
+          <li>Reminder phrased as a "quick note," not a demand</li>
+          <li>Gracious acknowledgment once payment is received</li>
+          <li>Seamlessly redirects attention back to the child</li>
+          <li>Maintains warmth through an administrative task</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="approach">
+  <div class="approach-grid">
+    <div>
+      <div class="section-label">The journey</div>
+      <div class="section-title">From First Message to Lasting Partnership</div>
+      <p class="section-desc">Every parent-teacher relationship follows a journey. Here's how I nurture that connection at every stage.</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item"><div class="timeline-dot">1</div><div class="timeline-content"><h4>Initial inquiry &amp; welcome</h4><p>Respond promptly and warmly. Set a professional, friendly tone from message one.</p></div></div>
+      <div class="timeline-item"><div class="timeline-dot">2</div><div class="timeline-content"><h4>Orientation &amp; assessment</h4><p>Guide parents through the program structure. Communicate assessment results clearly.</p></div></div>
+      <div class="timeline-item"><div class="timeline-dot">3</div><div class="timeline-content"><h4>Session updates</h4><p>After every session, share attendance confirmation, accomplishments, and any challenges.</p></div></div>
+      <div class="timeline-item"><div class="timeline-dot">4</div><div class="timeline-content"><h4>Home-school bridge</h4><p>Offer practical tips parents can apply at home to reinforce classroom learning.</p></div></div>
+      <div class="timeline-item"><div class="timeline-dot">5</div><div class="timeline-content"><h4>Ongoing monitoring</h4><p>Track progress over time so parents are always confident in their child's development.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Bridging the <span>Gap</span></div>
+  <div class="footer-copy">Portfolio — Parent-Teacher Communication Showcase</div>
+</footer>
+
+<script>
+var tabs = document.querySelectorAll('.conv-tab');
+var panels = document.querySelectorAll('#panels-container .conv-panel');
+
+for (var i = 0; i < tabs.length; i++) {
+  tabs[i].dataset.index = i;
+  tabs[i].addEventListener('click', function() {
+    var idx = parseInt(this.dataset.index);
+    for (var j = 0; j < tabs.length; j++) {
+      tabs[j].classList.remove('active');
+      panels[j].classList.remove('active');
+    }
+    tabs[idx].classList.add('active');
+    panels[idx].classList.add('active');
+  });
+}
+</script>
+
+</body>
+</html>
